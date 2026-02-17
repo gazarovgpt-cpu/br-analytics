@@ -81,7 +81,7 @@ def delta_color(value) -> str:
 
 # ── Стилизация таблиц ─────────────────────────────────────────────────
 
-def style_pnl_table(df: pd.DataFrame) -> pd.io.formats.style.Styler:
+def style_pnl_table(df: pd.DataFrame):
     """Стиль для P&L таблицы: цветовое кодирование маржинальности."""
     money_cols = [c for c in df.columns if any(
         k in c.lower() for k in ["revenue", "выручка", "ebitda", "маржа",
