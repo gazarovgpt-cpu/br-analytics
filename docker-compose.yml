@@ -1,0 +1,35 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: br_dwh
+    environment:
+      POSTGRES_DB: br_analytics
+      POSTGRES_USER: br_admin
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-br_analytics_2025}
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./sql:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U br_admin -d br_analytics"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: br_pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@belayaraduga.ru
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD:-admin123}
+    ports:
+      - "8080:80"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  pgdata:
